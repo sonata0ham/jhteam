@@ -1,0 +1,62 @@
+---데이터 가로로 ---
+
+WITH t AS
+(
+SELECT '미국' gubun, 'chevrolet' brand FROM dual
+UNION ALL SELECT '미국', 'ford'   FROM dual
+UNION ALL SELECT '미국', 'gm'     FROM dual
+UNION ALL SELECT '독일', 'benz'   FROM dual
+UNION ALL SELECT '독일', 'bmw'    FROM dual
+UNION ALL SELECT '독일', 'vw'     FROM dual
+UNION ALL SELECT '독일', 'audi'   FROM dual
+UNION ALL SELECT '일본', 'suzuki' FROM dual
+UNION ALL SELECT '일본', 'toyota' FROM dual
+UNION ALL SELECT '일본', 'honda'  FROM dual
+UNION ALL SELECT '일본', 'yamaha' FROM dual
+)
+SELECT rn
+     , MIN(DECODE(gubun, '미국', brand)) 미국
+     , MIN(DECODE(gubun, '독일', brand)) 독일
+     , MIN(DECODE(gubun, '일본', brand)) 일본
+  FROM (SELECT gubun, brand
+             , ROW_NUMBER() OVER(PARTITION BY gubun ORDER BY brand) rn
+          FROM t
+        )
+ GROUP BY rn
+ ORDER BY rn
+;
+
+
+--- 데이터 가로로 구분자 ---
+
+WITH t AS
+(
+SELECT '미국' gubun, 'chevrolet' brand FROM dual
+UNION ALL SELECT '미국', 'ford'   FROM dual
+UNION ALL SELECT '미국', 'gm'     FROM dual
+UNION ALL SELECT '독일', 'benz'   FROM dual
+UNION ALL SELECT '독일', 'bmw'    FROM dual
+UNION ALL SELECT '독일', 'vw'     FROM dual
+UNION ALL SELECT '독일', 'audi'   FROM dual
+UNION ALL SELECT '일본', 'suzuki' FROM dual
+UNION ALL SELECT '일본', 'toyota' FROM dual
+UNION ALL SELECT '일본', 'honda'  FROM dual
+UNION ALL SELECT '일본', 'yamaha' FROM dual
+)
+SELECT rn
+     , MIN(DECODE(dr, 1, gubun)) gubun_1
+     , MIN(DECODE(dr, 1, brand)) brand_1
+     , MIN(DECODE(dr, 2, gubun)) gubun_2
+     , MIN(DECODE(dr, 2, brand)) brand_2
+     , MIN(DECODE(dr, 3, gubun)) gubun_3
+     , MIN(DECODE(dr, 3, brand)) brand_3
+--     , MIN(DECODE(dr, 4, gubun)) gubun_4
+--     , MIN(DECODE(dr, 4, brand)) brand_4
+  FROM (SELECT gubun, brand
+             , DENSE_RANK() OVER(ORDER BY gubun) dr
+             , ROW_NUMBER() OVER(PARTITION BY gubun ORDER BY brand) rn
+          FROM t
+        )
+ GROUP BY rn
+ ORDER BY rn
+;
