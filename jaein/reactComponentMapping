@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html lang="ko">
+<head>
+	<%@ include file="include/head.jsp" %>
+	<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+	
+	<script type="text/babel">
+
+	class ContactInfo extends React.Component{
+	render(){
+	return(
+		<div>{this.props.contact.name}{this.props.contact.phone}</div>
+		)
+		}
+	}
+	
+	class Contact extends React.Component{
+		constructor(props){
+		super(props);
+		this.state = {
+		contactData : [
+		{ name: 'song' , phone:'010'},
+		{ name: 'song1' , phone:'011'},
+		{ name: 'song2' , phone:'012'},
+		{ name: 'song3' , phone:'013'}			
+		]
+		}
+	}
+	render(){
+	const mapToComponent = (data) => {
+		return data.map((contact, i) => {
+			return (<ContactInfo contact={contact} key={i} />);
+		});		
+	};
+
+
+		return(
+		<div>
+			{mapToComponent(this.state.contactData)}
+		</div>
+		)
+		}
+	}
+
+	class App extends React.Component{
+
+			render(){
+				return(
+					<Contact/>
+				)	
+			}
+		}
+		
+		ReactDOM.render(
+        	<App></App>,
+ 	    	 document.getElementsByClassName('root')[0]
+  	  );
+		
+	</script>
+</head>
+<body>
+	<div class="root"></div>
+</body>
+</html>
